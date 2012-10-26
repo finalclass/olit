@@ -13,7 +13,7 @@ basePath = '';
 files = [
     JASMINE,
     JASMINE_ADAPTER,
-    'olm.js',
+    'olit.js',
     'tests.js'
 ];
 
