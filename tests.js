@@ -41,19 +41,19 @@ describe('olit', function () {
     });
 
 
-    it('is clonnable', function () {
+    it('is can clone literals', function () {
         var e1 = olit(element).clone().get();
         expect(e1.c).toEqual('hello');
         e1.c = 'Hi there!';
         expect(e1.c).not.toEqual(element.c);
     });
 
-    it('is extendable', function () {
+    it('is can extend literals', function () {
         olit(element).extend({abc: 5});
         expect(element.abc).toBeDefined();
     });
 
-    it('can create classes', function () {
+    it('can create classes from litersls', function () {
         var Klass = olit(
             {
                 property: 7,
