@@ -1,2 +1,39 @@
 Object Literal Manipulator function.
-Look at the tests. Their are self explanatory. No documentation needed.
+This is a very simple class that can be usefull tool if you like Object Literal Pattern.
+This tool is composed of few methods and these methods should suffice for manipulating literals.
+
+This library is distributed under the MIT license.
+
+Every function in olit.js is documented and has the example so it's the best source of documentation.
+Tests are written in jasmine so their are self explanatory. You can use them as a tutorial.
+However i'm pasting here a simple usage example:
+
+var obj = {foo: 'bar'};
+var obj1 = olit(obj).clone().get();
+
+obj1.foo = 'baz';
+
+obj1 == obj;
+//returns: false
+
+obj1 = olit(obj1).extend({hello: 'World'}).get();
+obj1.hello;
+//returns: 'World'
+
+
+var Klass = olit(obj1).makeClass(function () {}
+    this.foo = 'TEST';
+).get();
+
+var a = new Klass();
+a.foo == 'TEST';
+//returns: true
+a.hello == 'World';
+//returns: true
+
+
+
+
+
+
+

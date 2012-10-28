@@ -41,14 +41,14 @@ describe('olit', function () {
     });
 
 
-    it('is can clone literals', function () {
+    it('can clone literals', function () {
         var e1 = olit(element).clone().get();
         expect(e1.c).toEqual('hello');
         e1.c = 'Hi there!';
         expect(e1.c).not.toEqual(element.c);
     });
 
-    it('is can extend literals', function () {
+    it('can extend literals', function () {
         olit(element).extend({abc: 5});
         expect(element.abc).toBeDefined();
     });
@@ -76,6 +76,30 @@ describe('olit', function () {
         a2.method();
         expect(a2.property).toEqual(3);
         expect(a1.property).toEqual(9);
+
+    });
+
+    it('has the ability to specify the constructor of created class', function () {
+
+        var Klass = olit({foo: 'bar'}).makeClass(function () {
+            this.foo = 'baz';
+        }).get();
+
+        var a = new Klass();
+        expect(a.foo).toEqual('baz');
+
+        var SubKlass = olit(Klass.prototype)
+            .extend({
+                foo: 'test',
+                hello: 'world'
+            })
+            .makeClass(Klass)
+            .get();
+
+        var b = new SubKlass();
+
+        expect(b.foo).toEqual('baz');
+        expect(b.hello).toEqual('world');
 
     });
 

@@ -33,14 +33,43 @@
 
     'use strict';
 
-    exports.olit = function (obj) {
-        var InternalOlit, context;
+    /**
+     * Create new olit instance.
+     *
+     * @example
+     * var object = olit({foo: "bar"});
+     *
+     * @param {Object} [context={}] the context object to manipulate.
+     * @return {InternalOlit}
+     */
+    exports.olit = function (context) {
 
-        InternalOlit = function () {};
-        context = obj;
+        context = context || {};
+
+        /**
+         * internal version of olit. This class will be instantiated and returned
+         * @constructor
+         */
+        var InternalOlit = function () {};
 
         InternalOlit.prototype = {
+            /**
+             * for type checking
+             */
             constructor: InternalOlit,
+
+            /**
+             * Make a copy of the context
+             *
+             * @example
+             * var obj = {foo: "bar"};
+             * var obj1 = olit(obj).clone().get();
+             * obj.foo = "baz";
+             * obj.foo == obj1.foo;
+             * false
+             *
+             * @return {Object|Function}
+             */
             clone: function () {
                 var attr, copy;
                 if (context === null || typeof context !== "object") {
@@ -55,6 +84,19 @@
                 context = copy;
                 return this;
             },
+
+
+            /**
+             * Add properties to existing context
+             *
+             * @example
+             * var obj = olit({foo: 'bar'}).extend({extension: 'baz'}).get();
+             * obj.extension == 'baz'
+             * true
+             *
+             * @param {Object} extension
+             * @return {Object|Function}
+             */
             extend: function (extension) {
                 var i;
                 for (i in extension) {
@@ -65,17 +107,70 @@
                 return this;
             },
 
+            /**
+             * Returns current context
+             *
+             * @example
+             *
+             * var obj = olit({foo: 'baz'}).get();
+             * obj.foo == 'baz';
+             * true
+             *
+             * @return {Object} current context
+             */
             get: function () {
                 return context;
             },
 
-            makeClass: function () {
-                var k = function () {};
-                k.prototype = context;
-                context = k;
+            /**
+             * Does somethink similar to Object.create
+             *
+             * @example:
+             * var Klass = olit({foo: 'bar'}).makeClass().get();
+             * var a = new Klass();
+             * var b = new Klass();
+             * b.foo = 'baz';
+             * a.foo == b.foo;
+             * false
+             *
+             * var Klass2 = olit({foo: 'bar'}).makeClass(function () {
+             *     this.foo = 'baz';
+             * }).get();
+             *
+             * var c = new Klass2();
+             *
+             * c.foo == 'baz';
+             * true
+             *
+             * @param {Function} classConstructor
+             * @return {olit}
+             */
+            makeClass: function (classConstructor) {
+                classConstructor = classConstructor || function () {};
+                classConstructor.prototype = context;
+                context = classConstructor;
                 return this;
             },
 
+            /**
+             * Loops through the iface and checks if all variable types are same
+             * in context
+             *
+             * @example
+             *
+             * var obj1 = {foo: 'bar'};
+             * var obj2 = {foo: 2};
+             *
+             * olit(obj1).isImplementationOf(obj2)
+             * false
+             *
+             * obj2.foo = 'baz';
+             * olit(obj1).isImplementationOf(obj2)
+             * true //becouse types are the same
+             *
+             * @param {Object} iface
+             * @return {Boolean} true if all the fields has the same type as context
+             */
             isImplementationOf: function (iface) {
                 var i;
                 for (i in iface) {
